@@ -37,6 +37,24 @@ let args = argv.option([ { name: 'verbose'
    the coinbase address is used.`
 
                          }
+                       , { name: 'url'
+                         , short: 'u'
+                         , type: 'string'
+                         , description:
+
+`URL of the thing. Useful if it's too large to be persisted
+   on the blockchain.`
+
+                         }
+                       , { name: 'mimetype'
+                         , short: 't'
+                         , type: 'string'
+                         , description:
+
+`MIME type of the body (from stdin or from a file). The
+   default is text/plain.`
+
+                         }
                        ]).run();
 
 argv.info('Available commands: publish, react');
