@@ -24,12 +24,14 @@ module.exports = {
 			v && console.log('Compiling contract...');
 			v && console.log(`Available compilers: ${web3.eth.getCompilers()}`);
 
-			web3.eth.compile.solidity(
-				fs.readFileSync(`${__dirname}/thing.sol`)
+			contract = web3.eth.compile.solidity(
+				fs.readFileSync( `${__dirname}/thing.sol`
+				               , { encoding: 'utf8' }
+			                   )
 			);
-		} else {
-			return contract;
 		}
+		
+		return contract;
 	},
 
 	get account() {
@@ -43,9 +45,9 @@ module.exports = {
 			let balance = web3.eth.getBalance(account);
 			v && console.log(`Using address ${account}.`);
 			v && console.log(`The balance on this address is ${balance}.`);
-		} else {
-			return account;
 		}
+
+		return account;
 	}	
 };
 

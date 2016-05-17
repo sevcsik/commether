@@ -5,5 +5,5 @@ let v;
 module.exports = args => {
 	v = args.options.verbose;
 
-	common.contract;
+	console.log(common.contract);
 };
