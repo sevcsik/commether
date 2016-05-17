@@ -20,7 +20,7 @@ let compile = () => {
 	if (!contractCode) throw new Error('failed to compile contract');
 
 	contract = web3.eth.contract(
-		contractCode.thing.info.abiDefinition
+		contractCode.Thing.info.abiDefinition
 	);
 };
 		

@@ -70,29 +70,32 @@ if (!command) {
            typeof index[command] === 'function') {
 	common.setup(args);
 
-	// load file from stdin or second argument
-	let data = '';
-	process.stdin.on('readable', function() {
-		let chunk = this.read();
-		if (chunk) {
-			data += chunk;
-		}
-	});
-
-	process.stdin.on('end', function() {
-		if (!data && args.targets[1]) {
-			data = fs.readFileSync(args.targets[1]);
-		} else if (!data) {
-			v && console.log(
-				'No input data - empty thing will be created.'
-			);
-		}
-		
+	if (args.targets[1]) {
+		data = fs.readFileSync(args.targets[1]);
 		index[command](args, data);
-	});
+	} else {
+		// load file from stdin or second argument
+		let data = '';
+		process.stdin.on('readable', function() {
+			let chunk = this.read();
+			if (chunk) {
+				data += chunk;
+			}
+		});
+
+		process.stdin.on('end', function() {
+			if (!data) {
+				v && console.log(
+					'No input data - empty thing will be created.'
+				);
+			}
+			
+			index[command](args, data);
+		});
+	}
 } else {
 	console.error(`No such command: ${command}`);
-	args.help();
+	argv.help();
 	process.exit();
 }
 

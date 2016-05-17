@@ -11,12 +11,11 @@ module.exports = (args, data) => {
 	let urlSize = args.url ? new Buffer(args.url).length : 0;
 
 	v && console.log(`Payload size: ${dataSize + urlSize}`);
-
+	
 	let transaction = { from: common.account
-	                  , data: common.contractCode.thing.code
+	                  , data: common.contractCode.Thing.code
                       , gas: 100000
 	                  };
-
 	// if we have an empty payload, it's not necessary to
 	// store the mime type.
 	let mimeType = dataSize ? (args.mimetype || 'text/plain')
@@ -42,5 +41,13 @@ module.exports = (args, data) => {
 		let estimatedGas = web3.eth.estimateGas(transaction);
 		let estimatedPrice = web3.eth.gasPrice * estimatedGas;
 		console.log(`Gas burnt: ${estimatedGas} (${estimatedPrice} ETH)`);
-	}
+	} else {
+		let address = common.contract.new(
+			url, data, 0, mimeType, transaction);
+		if (address) {
+			console.log(`Contract mined. Address: ${address}`);
+		} else {
+			console.error(`Something went wrong.`);
+		}
+	}	
 };
