@@ -1,6 +1,7 @@
-#!/bin/env node
+#!/usr/bin/env node
 
 let index = require('./index.js');
+let common = require('./common.js');
 
 let argv = require('argv');
 let args = argv.option([ { name: 'verbose'
@@ -11,7 +12,10 @@ let args = argv.option([ { name: 'verbose'
                        , { name: 'dryrun'
                          , short: 'd'
                          , type: 'boolean'
-                         , description: 'Don\'t commit changes to the blockchain'
+                         , description: 
+
+`Don\'t commit changes to the blockchain'`
+
                          }
                        , { name: 'rpcurl'
                          , short: 'r'
@@ -28,7 +32,8 @@ let args = argv.option([ { name: 'verbose'
                          , type: 'int'
                          , description:
 
-`Account number (index) to use, by deafault, the coinbase address is used.`
+`Account number (index) to use, by default,
+   the coinbase address is used.`
 
                          }
                        ]).run();
@@ -43,6 +48,7 @@ if (!command) {
 	process.exit(1);
 } else if (index.hasOwnProperty(command) &&
            typeof index[command] === 'function') {
+	common.setup(args);
 	index[command](args);
 } else {
 	console.error(`No such command: ${command}`);

@@ -1,4 +1,9 @@
-import * from "mortal";
+/* based on https://www.ethereum.org/greeter */
+contract Mortal {
+	address public owner;
+	function mortal() { owner = msg.sender; }
+	function kill() { if (msg.sender == owner) suicide(owner); }
+}	
 
 contract Thing is Mortal {
 	enum Mood { Agree, Disagree, Funny, Sad, Angry, Nothing }
