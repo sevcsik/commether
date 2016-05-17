@@ -23,13 +23,19 @@ let args = argv.option([ { name: 'verbose'
    defaults to http://localhost:8545)`
 
                          }
+                       , { name: 'account'
+                         , short: 'a'
+                         , type: 'int'
+                         , description:
+
+`Account number (index) to use, by deafault, the coinbase address is used.`
+
+                         }
                        ]).run();
 
 argv.info('Available commands: publish, react');
 
 let command = args.targets[0];
-
-console.log(args);
 
 if (!command) {
 	console.error('No command given, exiting.');
