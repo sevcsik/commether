@@ -3,6 +3,7 @@
 let index = require('./index.js');
 let common = require('./common.js');
 
+let fs = require('fs');
 let argv = require('argv');
 let args = argv.option([ { name: 'verbose'
 						 , short: 'v'
@@ -40,6 +41,7 @@ let args = argv.option([ { name: 'verbose'
 
 argv.info('Available commands: publish, react');
 
+let v = args.options.verbose;
 let command = args.targets[0];
 
 if (!command) {
@@ -49,7 +51,27 @@ if (!command) {
 } else if (index.hasOwnProperty(command) &&
            typeof index[command] === 'function') {
 	common.setup(args);
-	index[command](args);
+
+	// load file from stdin or second argument
+	let data = '';
+	process.stdin.on('readable', function() {
+		let chunk = this.read();
+		if (chunk) {
+			data += chunk;
+		}
+	});
+
+	process.stdin.on('end', function() {
+		if (!data && args.targets[1]) {
+			data = fs.readFileSync(args.targets[1]);
+		} else if (!data) {
+			v && console.log(
+				'No input data - empty thing will be created.'
+			);
+		}
+		
+		index[command](args, data);
+	});
 } else {
 	console.error(`No such command: ${command}`);
 	args.help();
