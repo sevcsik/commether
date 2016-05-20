@@ -55,6 +55,13 @@ let args = argv.option([ { name: 'verbose'
    default is text/plain.`
 
                          }
+                       , { name: 'mood'
+                         , short: 'm'
+                         , type: 'string'
+                         , description:
+`An emotion to attach to your thing. Possible values:
+	agree, disagree, funny, sad, angry, nothing (default)`
+                         }
                        ]).run();
 
 argv.info('Available commands: publish, react');
@@ -70,7 +77,7 @@ if (!command) {
            typeof index[command] === 'function') {
 	common.setup(args);
 
-	if (args.targets[1]) {
+	if (command === 'publish' && args.targets[1]) {
 		data = fs.readFileSync(args.targets[1]);
 		index[command](args, data);
 	} else {

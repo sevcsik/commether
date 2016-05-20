@@ -1,20 +1,19 @@
 let common = require('./common.js');
-let web3;
-
-let v;
+let web3, v;
 
 module.exports = (args, data) => {
 	v = args.options.verbose;
 	web3 = common.instance;
 
+	let url = args.options.url || '';
 	let dataSize = data ? data.length : 0;
-	let urlSize = args.url ? new Buffer(args.url).length : 0;
+	let urlSize = url ? new Buffer(args.url).length : 0;
 
 	v && console.log(`Payload size: ${dataSize + urlSize}`);
 	
 	let transaction = { from: common.account
 	                  , data: common.contractCode.Thing.code
-                      , gas: 100000
+                      , gas: 1000000
 	                  };
 	// if we have an empty payload, it's not necessary to
 	// store the mime type.
@@ -23,7 +22,6 @@ module.exports = (args, data) => {
 
 	v && mimeType && console.log(`Payload type: ${mimeType}`);
 	
-	let url = args.url || '';
 	let dataAsString = `${data.length} bytes`;
 
 	console.log(
@@ -49,5 +47,5 @@ module.exports = (args, data) => {
 		} else {
 			console.error(`Something went wrong.`);
 		}
-	}	
+	}
 };
