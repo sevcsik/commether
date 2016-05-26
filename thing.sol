@@ -1,11 +1,11 @@
 contract Mortal {
 	address public owner;
-	function mortal() { owner = msg.sender; }
+	function Mortal() { owner = msg.sender; }
 	function kill() { if (msg.sender == owner) suicide(owner); }
-}	
+}
 
 contract Thing is Mortal {
-	enum Mood { Agree, Disagree, Funny, Sad, Angry, Nothing }
+	enum Mood { Nothing, Agree, Disagree, Amused, Angry, Sad }
 	// URL of the reaction - optional
 	string public url;
 	// Content of the reaction - optional
@@ -16,7 +16,7 @@ contract Thing is Mortal {
 	Mood public mood;
 	Thing[] public reactions;
 
-	function thing( string _url
+	function Thing( string _url
 		          , string _data
 		          , Mood _mood
 		          , string _mimetype) {

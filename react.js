@@ -30,7 +30,7 @@ module.exports = args => {
 		v && console.log('Sending transaction to call #react. Result:'); 
 		console.log(thing.react.sendTransaction( reaction.address
 		                                       , { from: common.account
-		                                         , gas: 1000000 
+		                                         , gas: 2000000
 		                                         }));
 	}
 };

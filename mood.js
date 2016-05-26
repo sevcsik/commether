@@ -13,7 +13,7 @@ module.exports = {
 		if (val === -1) {
 			throw new Error('invalid mood ' + val);
 		}
-		
+
 		return val;
 	}
 };

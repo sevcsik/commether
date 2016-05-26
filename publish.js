@@ -12,19 +12,20 @@ module.exports = (args, data) => {
 	let mood = moodT.parse(args.options.mood || 'nothing');
 
 	v && console.log(`Payload size: ${dataSize + urlSize}`);
-	
+
 	let transaction = { from: common.account
-	                  , data: common.contractCode.Thing.code
-                      , gas: 1000000
+	                  , data: common.contractCode.code
+                      , gas: 4000000
 	                  };
+
 	// if we have an empty payload, it's not necessary to
 	// store the mime type.
 	let mimeType = dataSize ? (args.mimetype || 'text/plain')
 	                        : '';
 
 	v && mimeType && console.log(`Payload type: ${mimeType}`);
-	
-	let dataAsString = mimeType === 'text/plain' ? data 
+
+	let dataAsString = mimeType === 'text/plain' ? `>>>\n${data}<<<`
 	                                             : `${data.length} bytes`;
 
 	console.log(
@@ -43,10 +44,10 @@ module.exports = (args, data) => {
 		let estimatedPrice = web3.eth.gasPrice * estimatedGas;
 		console.log(`Gas burnt: ${estimatedGas} (${estimatedPrice} ETH)`);
 	} else {
-		let address = common.contract.new(
-			url, data, 0, mimeType, transaction);
-		if (address) {
-			console.log(`Contract mined. Address: ${address}`);
+		let contract = common.contract.new(
+			url, data, mood, mimeType, transaction);
+		if (contract) {
+			console.log(`Contract mined. Address: ${contract.address}`);
 		} else {
 			console.error(`Something went wrong.`);
 		}

@@ -13,7 +13,7 @@ let args = argv.option([ { name: 'verbose'
                        , { name: 'dryrun'
                          , short: 'd'
                          , type: 'boolean'
-                         , description: 
+                         , description:
 
 `Don\'t commit changes to the blockchain'`
 
@@ -77,28 +77,32 @@ if (!command) {
            typeof index[command] === 'function') {
 	common.setup(args);
 
-	if (command === 'publish' && args.targets[1]) {
-		data = fs.readFileSync(args.targets[1]);
-		index[command](args, data);
-	} else {
-		// load file from stdin or second argument
-		let data = '';
-		process.stdin.on('readable', function() {
-			let chunk = this.read();
-			if (chunk) {
-				data += chunk;
-			}
-		});
-
-		process.stdin.on('end', function() {
-			if (!data) {
-				v && console.log(
-					'No input data - empty thing will be created.'
-				);
-			}
-			
+	if (command === 'publish') {
+		if (args.targets[1]) {
+			data = fs.readFileSync(args.targets[1]);
 			index[command](args, data);
-		});
+		} else {
+			// load file from stdin or second argument
+			let data = '';
+			process.stdin.on('readable', function() {
+				let chunk = this.read();
+				if (chunk) {
+					data += chunk;
+				}
+			});
+
+			process.stdin.on('end', function() {
+				if (!data) {
+					v && console.log(
+						'No input data - empty thing will be created.'
+					);
+				}
+
+				index[command](args, data);
+			});
+		}
+	} else {
+		index[command](args);
 	}
 } else {
 	console.error(`No such command: ${command}`);
