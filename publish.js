@@ -1,4 +1,5 @@
 let common = require('./common.js');
+let moodT = require('./mood.js');
 let web3, v;
 
 module.exports = (args, data) => {
@@ -7,7 +8,8 @@ module.exports = (args, data) => {
 
 	let url = args.options.url || '';
 	let dataSize = data ? data.length : 0;
-	let urlSize = url ? new Buffer(args.url).length : 0;
+	let urlSize = url ? new Buffer(args.options.url).length : 0;
+	let mood = moodT.parse(args.options.mood || 'nothing');
 
 	v && console.log(`Payload size: ${dataSize + urlSize}`);
 	
@@ -22,14 +24,15 @@ module.exports = (args, data) => {
 
 	v && mimeType && console.log(`Payload type: ${mimeType}`);
 	
-	let dataAsString = `${data.length} bytes`;
+	let dataAsString = mimeType === 'text/plain' ? data 
+	                                             : `${data.length} bytes`;
 
 	console.log(
 
-`Creating contract Thing( _url: ${url}
-                       , _data: ${dataAsString}
-                       , _mood: 0
-                       , _mimetype: ${mimeType}
+`Creating contract Thing( url: ${url}
+                       , mood: ${moodT.format(mood)}
+                       , mimetype: ${mimeType}
+                       , data: ${dataAsString}
                        )
 `
     );
