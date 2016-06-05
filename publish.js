@@ -13,11 +13,6 @@ module.exports = (args, data) => {
 
 	v && console.log(`Payload size: ${dataSize + urlSize}`);
 
-	let transaction = { from: common.account
-	                  , data: common.contractCode.code
-                      , gas: 4000000
-	                  };
-
 	// if we have an empty payload, it's not necessary to
 	// store the mime type.
 	let mimeType = dataSize ? (args.mimetype || 'text/plain')
@@ -36,20 +31,31 @@ module.exports = (args, data) => {
                        , data: ${dataAsString}
                        )
 `
-    );
+	);
 
-	if (args.options.dryrun) {
-		console.log('Dry run, executing locally.');
-		let estimatedGas = web3.eth.estimateGas(transaction);
-		let estimatedPrice = web3.eth.gasPrice * estimatedGas;
-		console.log(`Gas burnt: ${estimatedGas} (${estimatedPrice} ETH)`);
+	let transaction = { from: common.account
+	                  , data: common.contractCode.code
+	                  };
+
+	let gas = 4000000;
+	let estimatedPrice = web3.eth.gasPrice * gas;
+	console.log(`Using gas: ${gas} (${web3.fromWei(estimatedPrice, 'ether')} ETH)`);
+
+	if (!args.options.dryrun) {
+		v && console.log(`Sending transaction.`);
+		transaction.gas = gas;
+		let contract = common.contract.new( url, data, mood, mimeType, transaction
+		                                  , function(err, data) {
+
+				if (err)
+					console.error(err.message);
+				else if (!data.address)
+					console.log(`Contract to be mined. TX Hash: ${data.transactionHash}`);
+				else
+					console.log(`Contract mined. Address: ${data.address}`);
+			}
+		);
 	} else {
-		let contract = common.contract.new(
-			url, data, mood, mimeType, transaction);
-		if (contract) {
-			console.log(`Contract mined. Address: ${contract.address}`);
-		} else {
-			console.error(`Something went wrong.`);
-		}
+		v && console.log('Dry dun, not sending transaction.');
 	}
 };
