@@ -37,24 +37,17 @@ module.exports = (args, data) => {
 	                  , data: common.contractCode.code
 	                  };
 
-	let gas = 4000000;
+	transaction.data = common.contract.new.getData(url, data, mood, mimeType, transaction);
+
+	let gas = web3.eth.estimateGas(transaction);
 	let estimatedPrice = web3.eth.gasPrice * gas;
 	console.log(`Using gas: ${gas} (${web3.fromWei(estimatedPrice, 'ether')} ETH)`);
 
 	if (!args.options.dryrun) {
 		v && console.log(`Sending transaction.`);
 		transaction.gas = gas;
-		let contract = common.contract.new( url, data, mood, mimeType, transaction
-		                                  , function(err, data) {
-
-				if (err)
-					console.error(err.message);
-				else if (!data.address)
-					console.log(`Contract to be mined. TX Hash: ${data.transactionHash}`);
-				else
-					console.log(`Contract mined. Address: ${data.address}`);
-			}
-		);
+		let tx = web3.eth.sendTransaction(transaction);
+		console.log(`Contract to be mined. TX Hash: ${tx}`);
 	} else {
 		v && console.log('Dry dun, not sending transaction.');
 	}
