@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-let index = require('./index.js');
-let common = require('./common.js');
+let options = require('./options.js');
 
+let _ = require('lodash');
 let fs = require('fs');
 let argv = require('argv');
 let args = argv.option([ { name: 'verbose'
@@ -66,20 +66,27 @@ let args = argv.option([ { name: 'verbose'
 
 argv.info('Available commands: publish, react');
 
-let v = args.options.verbose;
-let command = args.targets[0];
+let command = _.head(args.targets);
 
 if (!command) {
 	console.error('No command given, exiting.');
 	argv.help();
 	process.exit(1);
-} else if (index.hasOwnProperty(command) &&
-           typeof index[command] === 'function') {
-	common.setup(args);
+} else {
+	options.init(args.options);
+	let v = options.verbose;
+
+	let index = require('./index.js');
+
+	if (typeof index[command] !== 'function') {
+		console.error('Unknown command: ' + command);
+		argv.help();
+		process.exit(1);
+	}
 
 	if (command === 'publish') {
 		if (args.targets[1]) {
-			data = fs.readFileSync(args.targets[1]);
+			let data = fs.readFileSync(args.targets[1]);
 			index[command](args, data);
 		} else {
 			// load file from stdin or second argument
@@ -102,14 +109,7 @@ if (!command) {
 			});
 		}
 	} else {
-		index[command](args);
+		index[command].apply(null, _.tail(args.targets));
 	}
-} else {
-	console.error(`No such command: ${command}`);
-	argv.help();
-	process.exit();
 }
-
-
-
 

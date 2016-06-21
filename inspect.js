@@ -1,31 +1,32 @@
-let common = require('./common.js');
+let thing = require('./thing.js');
+let web3 = require('./web3.js');
 let mood = require('./mood.js');
-let web3, v;
+let options = require('./options.js');
 
-module.exports = (args) => {
-	let address = args.targets[1];
-	web3 = common.instance;
-	v = args.options.verbose;
+module.exports = (address) => {
+	let theThing;
+	let v = options.verbose;
 
-	if (!web3.isAddress(address))
+	if (!web3.isAddress(address)) {
 		throw new Error('Argument is not an address: ' + address);
+	}
 
 	v && console.log('Loading contract at ' + address);
-	contract = common.contract.at(address);
+	theThing = thing.at(address);
 
 	console.log(
 `Contract address: ${address}
-Creator: ${contract.owner()}
-Content Type: ${contract.mimetype()}
-Mood: ${mood.format(contract.mood())}
-URL: ${contract.url()}
+Creator: ${theThing.owner()}
+Content Type: ${theThing.mimetype()}
+Mood: ${mood.format(theThing.mood())}
+URL: ${theThing.url()}
 Content:
-${contract.data()}
+${theThing.data()}
 
 
 
 Reactions:
-${contract.reactions()}
+${theThing.reactions()}
 `);
 };
 

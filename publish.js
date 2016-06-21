@@ -1,10 +1,11 @@
-let common = require('./common.js');
+let thing = require('./thing.js');
+let account = require('./account.js');
+let web3 = require('./web3.js');
 let moodT = require('./mood.js');
 let web3, v;
 
 module.exports = (args, data) => {
 	v = args.options.verbose;
-	web3 = common.instance;
 
 	let url = args.options.url || '';
 	let dataSize = data ? data.length : 0;
@@ -26,20 +27,23 @@ module.exports = (args, data) => {
 	console.log(
 
 `Creating contract Thing( url: ${url}
-                       , mood: ${moodT.format(mood)}
-                       , mimetype: ${mimeType}
-                       , data: ${dataAsString}
-                       )
+                        , mood: ${moodT.format(mood)}
+                        , mimetype: ${mimeType}
+                        , data: ${dataAsString}
+                        )
 `
 	);
 
-	let transaction = { from: common.account
-	                  , data: common.contractCode.code
+	let transaction = { from: account
+	                  , data: thing.contractCode.code
 	                  };
-
-	transaction.data = common.contract.new.getData(url, data, mood, mimeType, transaction);
-
+	console.log('hello');
 	let gas = web3.eth.estimateGas(transaction);
+	console.log('sync:' + gas);
+	process.exit();
+
+	transaction.data = thing.contract.new.getData(url, data, mood, mimeType, transaction);
+
 	let estimatedPrice = web3.eth.gasPrice * gas;
 	console.log(`Using gas: ${gas} (${web3.fromWei(estimatedPrice, 'ether')} ETH)`);
 
